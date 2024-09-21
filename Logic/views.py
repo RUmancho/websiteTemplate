@@ -1,53 +1,32 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from . import forms
 # Create your views here.
 
 users = []
 
-def registration(request):
-    """Форма регистрации"""
-    entry = forms.RegistrationForm()
-
-    email = request.POST.get('email', "")
-    password = request.POST.get('password', "")
-    username = request.POST.get('username', "")
-
+def dataAction(request, action, **kwargs):
+    """Форма регистрации/авторизации"""
+    get = request.GET
+    user = {
+        "username" : get.get("username", ""),
+        "password" : get.get("password", ""),
+        "email" : get.get("email", "")
+    }
     context = {
-        "entry": entry,
-        "username" : username
+        "entry" : forms.Entry
     }
+    I = render(request, "myPage.html", user)
 
-    if not all([email, password, username]):
-        return render(request, "registration.html", context)
-    
-    users.append({
-        "email" : email,
-        "password" : password,
-        "username" : username
-    })
-
-    return render(request, "myPage.html", context)
-
-def autorization(request):
-    """Форма авторизации"""
-    entry = forms.RegistrationForm()
-
-    email = request.POST.get('email', "")
-    password = request.POST.get('password', "")
-    username = request.POST.get('username', "")
-
-    context = {
-        "username" : username,
-        "entry"    : entry
-    }
-
-    getAutorisateData = {
-        "email":    email,
-        "password": password,
-        "username": username
-    }
-
-    if getAutorisateData in users:
-        return render(request, "myPage.html", context)
-    
-    return render(request, "authorization.html", context)
+    if all(user.values()): #* не пустые строки
+        if action == "registration":
+            if user not in users:
+                users.append(user)
+                return I
+            return HttpResponse("Вы уже зарегистрированы")
+        
+        elif action == "authorization":
+            if user in users:
+                return I
+            return HttpResponse("Вы ещё не зарегистрировались")
+            
+    return render(request, action + ".html", context)

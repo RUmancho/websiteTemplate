@@ -6,12 +6,11 @@
     <title>Document</title>
 </head>
 <body>
-    
-    <form method="post">
-        {% csrf_token %} 
+    <form>
+        {% csrf_token %}
         {{ entry }}
 
-        <input type="submit" name = "Авторизоваться">
+        <input type = "submit" value = "Авторизоваться">
     </form>
 </body>
 </html>

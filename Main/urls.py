@@ -20,6 +20,5 @@ import Logic.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("registration", Logic.views.registration),
-    path("autorisate", Logic.views.autorization)
+    path("<str:action>", Logic.views.dataAction),
 ]
